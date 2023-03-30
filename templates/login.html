@@ -1,0 +1,22 @@
+
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Login</title>
+  </head>
+  <body>
+    <h1><p style="color: red">Login</p></h1>
+    <form method="post" action="{{ url_for('login') }}">
+      <label for="username">Username:</label>
+      <input type="text" name="username" required><br><br>
+      <label for="password">Password:</label>
+      <input type="password" name="password" required><br><br>
+      <input type="submit" value="Login">
+    </form>
+  </body>
+
+  <p style="color:red;">{{ error }}</p>
+
+  <h4>New users <a href="{{ url_for('register') }}">register here</a></h4>
+</html>

@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Dashboard</title>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type=text/javascript>
+
+        $(function() {
+
+          $('a#captureBtn').on('click', function(e) {
+            e.preventDefault()
+            $.post('/camera/capture',
+                function(data) {
+              //alert(data)
+              document.getElementById("captureImg").src=data;
+            });
+            return false;
+          });
+
+          $('a#tempReadBtn').on('click', function(e) {
+            e.preventDefault()
+            $.post('/temperature/status',
+                function(data) {
+              //alert(data)
+              document.getElementById("cSpn").innerHTML=JSON.parse(data)[0];
+              document.getElementById("fSpn").innerHTML=JSON.parse(data)[1];
+            });
+            return false;
+          });
+
+          
+
+          $('a#doorStatusBtn').on('click', function(e) {
+            e.preventDefault()
+            $.post('/door/status',
+                function(data) {
+              //alert(data)
+              if(data==1)
+              {
+                document.getElementById("doorStatusSpn").innerHTML="Door is open";
+              }
+                
+            else
+                 {
+                  document.getElementById("doorStatusSpn").innerHTML="Door is closed";
+                 }   
+            });
+            return false;
+          });
+
+          
+
+        });
+</script>
+
+    <style>
+      body {font-family: Arial;}
+      
+      /* Style the tab */
+      .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+      }
+      
+      /* Style the buttons inside the tab */
+      .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 14px 16px;
+        transition: 0.3s;
+        font-size: 17px;
+      }
+      
+      /* Change background color of buttons on hover */
+      .tab button:hover {
+        background-color: #ddd;
+      }
+      
+      /* Create an active/current tablink class */
+      .tab button.active {
+        background-color: #ccc;
+      }
+      
+      /* Style the tab content */
+      .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+      }
+      </style>
+  </head>
+  <body onload="openFeature(event, 'camera-tab')">
+
+
+    <h2>Group-007 IoT Dashboard</h2>
+<p>Welcome, {{ session['username'] }}!</p>
+
+<div class="tab">
+  <button class="tablinks" onclick="openFeature(event, 'camera-tab')">Camera</button>
+  <button class="tablinks" onclick="openFeature(event, 'temperature-tab')">Temperature</button>
+  <button class="tablinks" onclick="openFeature(event, 'door-tab')">Door</button>
+</div>
+
+<div id="camera-tab" class="tabcontent">
+  <h3>Front Door View</h3>
+  <img  id="captureImg" src="{{url_for('static', filename='camera/home-early-card-2-500x282.jpeg')}}" width="620" height="480"/>
+
+  <a href=# id=captureBtn><button class='btn btn-default'>Refresh</button></a>
+</div>
+
+<div id="temperature-tab" class="tabcontent">
+  <h3>Current Temperature</h3>
+  <span id="cSpn">UNKNOWN</span>   <b>&#8451;</b>
+  <br/>
+  <span id="fSpn">UNKNOWN</span>   <b>&#8457;</b>
+
+  <a href=# id=tempReadBtn><button class='btn btn-default'>Refresh</button></a>
+</div>
+
+<div id="door-tab" class="tabcontent">
+  <h3>Door Status</h3>
+  <span id="doorStatusSpn">UNKNOWN</span>
+
+  <a href=# id=doorStatusBtn><button class='btn btn-default'>Refresh</button></a>
+</div>
+
+<script>
+function openFeature(evt, featureName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(featureName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+</script>
+   
+
+<hr/>
+
+
+
+    <form method="get" action="/logout">
+      <input type="submit" value="Logout">
+    </form>
+  </body>
+</html>
