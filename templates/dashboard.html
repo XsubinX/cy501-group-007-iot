@@ -45,16 +45,14 @@
               {
                 document.getElementById("doorStatusSpn").innerHTML="OPEN";
                 document.getElementById("doorStatusSpn").style.color="red"
-                document.getElementById('doorOpenStatusImg').style.visibility = 'visible'
-                document.getElementById('doorClosedStatusImg').style.visibility = 'hidden'
+                document.getElementById('doorStatusImg').src='static/images/opened-door.png'
               }
               
             else
                  {
                   document.getElementById("doorStatusSpn").innerHTML="CLOSED";
                   document.getElementById("doorStatusSpn").style.color="green"
-                  document.getElementById('doorOpenStatusImg').style.visibility = 'hidden'
-                document.getElementById('doorClosedStatusImg').style.visibility = 'visible'
+                  document.getElementById('doorStatusImg').src='static/images/closed-door.png'
                  }  
                  document.getElementById('doorStatusLoading').style.visibility = 'hidden' 
             });
@@ -169,8 +167,8 @@
 <div id="door-tab" class="tabcontent">
   <h3>Door Status</h3>
   <b><span id="doorStatusSpn" style="color: orange;">UNKNOWN</span></b>
-  <img  id="doorOpenStatusImg" src="{{url_for('static', filename='images/opened-door.png')}}" width="72" height="72" style="visibility: hidden;"/>
-  <img  id="doorClosedStatusImg" src="{{url_for('static', filename='images/closed-door.png')}}" width="72" height="72" style="visibility: hidden;"/>
+  <img  id="doorStatusImg" src="{{url_for('static', filename='images/unknown.png')}}" width="72" height="72" />
+
 
   
   <hr>
