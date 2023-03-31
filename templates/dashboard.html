@@ -10,21 +10,25 @@
 
           $('a#captureBtn').on('click', function(e) {
             e.preventDefault()
+            document.getElementById('captureLoading').style.visibility = 'visible'
             $.post('/camera/capture',
                 function(data) {
-              alert(data)
+             // alert(data)
               document.getElementById("captureImg").src=data;
+              document.getElementById('captureLoading').style.visibility = 'hidden'
             });
             return false;
           });
 
           $('a#tempReadBtn').on('click', function(e) {
             e.preventDefault()
+            document.getElementById('tempReadLoading').style.visibility = 'visible'
             $.post('/temperature/status',
                 function(data) {
               //alert(data)
               document.getElementById("cSpn").innerHTML=JSON.parse(data)[0];
               document.getElementById("fSpn").innerHTML=JSON.parse(data)[1];
+              document.getElementById('tempReadLoading').style.visibility = 'hidden'
             });
             return false;
           });
@@ -33,18 +37,26 @@
 
           $('a#doorStatusBtn').on('click', function(e) {
             e.preventDefault()
+            document.getElementById('doorStatusLoading').style.visibility = 'visible'
             $.post('/door/status',
                 function(data) {
               //alert(data)
               if(data==1)
               {
-                document.getElementById("doorStatusSpn").innerHTML="Door is open";
+                document.getElementById("doorStatusSpn").innerHTML="OPEN";
+                document.getElementById("doorStatusSpn").style.color="red"
+                document.getElementById('doorOpenStatusImg').style.visibility = 'visible'
+                document.getElementById('doorClosedStatusImg').style.visibility = 'hidden'
               }
-                
+              
             else
                  {
-                  document.getElementById("doorStatusSpn").innerHTML="Door is closed";
-                 }   
+                  document.getElementById("doorStatusSpn").innerHTML="CLOSED";
+                  document.getElementById("doorStatusSpn").style.color="green"
+                  document.getElementById('doorOpenStatusImg').style.visibility = 'hidden'
+                document.getElementById('doorClosedStatusImg').style.visibility = 'visible'
+                 }  
+                 document.getElementById('doorStatusLoading').style.visibility = 'hidden' 
             });
             return false;
           });
@@ -97,9 +109,15 @@
   </head>
   <body onload="openFeature(event, 'camera-tab')">
 
+<table style="width: 100%;">
+  <tr>
+    <td align="left" style="width: 50%;"><h1>Group-007 IoT Node Manager</h1></td>
+    <td align="right" style="width: 50%;">   
+      Welcome: <b>{{ loggedInUser }}</b>&nbsp;|&nbsp;<a href="{{ url_for('logout') }}">Logout</a>
+    </td>
+  </tr>
+</table>
 
-    <h2>Group-007 IoT Dashboard</h2>
-<p>Welcome, {{ session['username'] }}!</p>
 
 <div class="tab">
   <button class="tablinks" onclick="openFeature(event, 'camera-tab')">Camera</button>
@@ -109,9 +127,22 @@
 
 <div id="camera-tab" class="tabcontent">
   <h3>Front Door View</h3>
-  <img  id="captureImg" src="{{url_for('static', filename='camera/home-early-card-2-500x282.jpeg')}}" width="620" height="480"/>
+  <img  id="captureImg" src="{{url_for('static', filename='camera/black.jpeg')}}" width="620" height="480"/>
 
-  <a href=# id=captureBtn><button class='btn btn-default'>Refresh</button></a>
+ 
+  
+  <hr>
+  <table>
+    <tr>
+      <td align="left">
+        <a href=# id=captureBtn><button class='btn btn-default'>Refresh</button></a>
+      </td>
+      <td align="left">   
+        <img  id="captureLoading" src="{{url_for('static', filename='images/loading.gif')}}" width="36" height="36" style="visibility: hidden;"/>
+      </td>
+    </tr>
+  </table>
+
 </div>
 
 <div id="temperature-tab" class="tabcontent">
@@ -120,14 +151,40 @@
   <br/>
   <span id="fSpn">UNKNOWN</span>   <b>&#8457;</b>
 
-  <a href=# id=tempReadBtn><button class='btn btn-default'>Refresh</button></a>
+  
+  <hr>
+  <table>
+    <tr>
+      <td align="left">
+        <a href=# id=tempReadBtn><button class='btn btn-default'>Refresh</button></a>
+      </td>
+      <td align="left">   
+        <img  id="tempReadLoading" src="{{url_for('static', filename='images/loading.gif')}}" width="36" height="36" style="visibility: hidden;"/>
+      </td>
+    </tr>
+  </table>
+
 </div>
 
 <div id="door-tab" class="tabcontent">
   <h3>Door Status</h3>
-  <span id="doorStatusSpn">UNKNOWN</span>
+  <b><span id="doorStatusSpn" style="color: orange;">UNKNOWN</span></b>
+  <img  id="doorOpenStatusImg" src="{{url_for('static', filename='images/opened-door.png')}}" width="72" height="72" style="visibility: hidden;"/>
+  <img  id="doorClosedStatusImg" src="{{url_for('static', filename='images/closed-door.png')}}" width="72" height="72" style="visibility: hidden;"/>
 
-  <a href=# id=doorStatusBtn><button class='btn btn-default'>Refresh</button></a>
+  
+  <hr>
+  <table>
+    <tr>
+      <td align="left">
+        <a href=# id=doorStatusBtn><button class='btn btn-default'>Refresh</button></a>
+      </td>
+      <td align="left">   
+        <img  id="doorStatusLoading" src="{{url_for('static', filename='images/loading.gif')}}" width="36" height="36" style="visibility: hidden;"/>
+      </td>
+    </tr>
+  </table>
+
 </div>
 
 <script>
@@ -148,11 +205,8 @@ function openFeature(evt, featureName) {
    
 
 <hr/>
+<div style="text-align: right;">
+  &copy;2023 Group-007 | Spring 2023 CY501-742 | Southeast Missouri State University
+</div>
 
-
-
-    <form method="get" action="/logout">
-      <input type="submit" value="Logout">
-    </form>
-  </body>
 </html>

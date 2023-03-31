@@ -1,2 +1,6 @@
+from time import sleep
+
 def get_door_pin_status():
-    return 0
+    print("door")
+    sleep(2)
+    return 1
