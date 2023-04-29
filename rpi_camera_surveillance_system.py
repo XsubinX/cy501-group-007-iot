@@ -9,10 +9,8 @@ from http import server
 PAGE="""\
 <html>
 <head>
-<title>Group-007 IoT Node Manager - Live Camera View</title>
 </head>
 <body>
-<center><h1>Group-007 IoT Node Manager - Live Camera View</h1></center>
 <center><img src="stream.mjpg" width="640" height="480"></center>
 </body>
 </html>

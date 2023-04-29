@@ -4,9 +4,9 @@ from tinydb import TinyDB, Query
 import hashlib
 import os
 from dummy_camera_service import capture_image
-from dummy_door_service import get_door_pin_status
-from dummy_temperature_service import read_temp
-from dummy_motion_service import get_motion_pin_status
+from door_service import get_door_pin_status
+from temperature_service import read_temp
+from motion_service import get_motion_pin_status
 import json
 from flask_socketio import SocketIO, emit
 from flask_cors import CORS
