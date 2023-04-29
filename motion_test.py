@@ -1,15 +1,17 @@
 import RPi.GPIO as GPIO
+from time import sleep
 
-PIR_input = 29				#read PIR Output
-LED = 32				#LED for signalling motion detected	
+PIR_input = 29
 GPIO.setwarnings(False)
-GPIO.setmode(GPIO.BOARD)		#choose pin no. system
-GPIO.setup(PIR_input, GPIO.IN)	
-GPIO.setup(LED, GPIO.OUT)
-GPIO.output(LED, GPIO.LOW)
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(PIR_input, GPIO.IN, pull_up_down = GPIO.PUD_UP)
 
 while True:
-    if(GPIO.input(PIR_input)):
-        print(1) # motion detected
+    curr_status=GPIO.input(PIR_input)
+    print(curr_status)
+    if(curr_status):
+        print("motion detected")
+        sleep(2)
     else:
-        print(0) # no motion
+        print("no motion")
+        sleep(2)
