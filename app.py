@@ -3,7 +3,7 @@ import logging
 from tinydb import TinyDB, Query
 import hashlib
 import os
-from camera_service import capture_image
+from dummy_camera_service import capture_image
 from door_service import get_door_pin_status
 from temperature_service import read_temp
 from motion_service import get_motion_pin_status
