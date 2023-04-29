@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Dashboard</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type=text/javascript>
+
+        $(function() {
+
+          $('a#captureBtn').on('click', function(e) {
+            e.preventDefault()
+            document.getElementById('captureLoading').style.visibility = 'visible'
+            $.post('/camera/capture',
+                function(data) {
+             // alert(data)
+              document.getElementById("captureImg").src=data;
+              document.getElementById('captureLoading').style.visibility = 'hidden'
+            });
+            return false;
+          });
+
+          $('a#tempReadBtn').on('click', function(e) {
+            e.preventDefault()
+            document.getElementById('tempReadLoading').style.visibility = 'visible'
+            $.post('/temperature/status',
+                function(data) {
+              //alert(data)
+              document.getElementById("cSpn").innerHTML=JSON.parse(data)[0];
+              document.getElementById("fSpn").innerHTML=JSON.parse(data)[1];
+              document.getElementById('tempReadLoading').style.visibility = 'hidden'
+            });
+            return false;
+          });
+
+          
+
+          $('a#doorStatusBtn').on('click', function(e) {
+            e.preventDefault()
+            document.getElementById('doorStatusLoading').style.visibility = 'visible'
+            $.post('/door/status',
+                function(data) {
+              //alert(data)
+              if(data==1)
+              {
+                document.getElementById("doorStatusSpn").innerHTML="OPEN";
+                document.getElementById("doorStatusSpn").style.color="red"
+                document.getElementById('doorStatusImg').src='static/images/opened-door.png'
+              }
+              
+            else
+                 {
+                  document.getElementById("doorStatusSpn").innerHTML="CLOSED";
+                  document.getElementById("doorStatusSpn").style.color="green"
+                  document.getElementById('doorStatusImg').src='static/images/closed-door.png'
+                 }  
+                 document.getElementById('doorStatusLoading').style.visibility = 'hidden' 
+            });
+            return false;
+          });
+
+         
+          $('a#motionStatusBtn').on('click', function(e) {
+            e.preventDefault()
+            document.getElementById('motionStatusLoading').style.visibility = 'visible'
+            $.post('/motion/status',
+                function(data) {
+              //alert(data)
+              if(data==1)
+              {
+                document.getElementById("motionStatusSpn").innerHTML="Motion Detected";
+                document.getElementById("motionStatusSpn").style.color="red"
+                document.getElementById('motionStatusImg').src='static/images/run.gif'
+              }
+              
+            else
+                 {
+                  document.getElementById("motionStatusSpn").innerHTML="No Motion";
+                  document.getElementById("motionStatusSpn").style.color="green"
+                  document.getElementById('motionStatusImg').src='static/images/sensor.gif'
+                 }  
+                 document.getElementById('motionStatusLoading').style.visibility = 'hidden' 
+            });
+            return false;
+          });
+
+
+        });
+</script>
+
+  <style>
+    body {
+      font-family: Arial;
+    }
+
+    /* Style the tab */
+    .tab {
+      overflow: hidden;
+      border: 1px solid #ccc;
+      background-color: #f1f1f1;
+    }
+
+    /* Style the buttons inside the tab */
+    .tab button {
+      background-color: inherit;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+      font-size: 17px;
+    }
+
+    /* Change background color of buttons on hover */
+    .tab button:hover {
+      background-color: #ddd;
+    }
+
+    /* Create an active/current tablink class */
+    .tab button.active {
+      background-color: #ccc;
+    }
+
+    /* Style the tab content */
+    .tabcontent {
+      display: none;
+      padding: 6px 12px;
+      border: 1px solid #ccc;
+      border-top: none;
+    }
+  </style>
+</head>
+
+<body onload="openFeature(event, 'camera-tab')">
+
+  <table style="width: 100%;">
+    <tr>
+      <td align="left" style="width: 50%;">
+        <h1>Group-007 IoT Node Manager</h1>
+      </td>
+      <td align="right" style="width: 50%;">
+        Welcome: <b>{{ loggedInUser }}</b>&nbsp;|&nbsp;<a href="{{ url_for('logout') }}">Logout</a>
+      </td>
+    </tr>
+  </table>
+
+
+  <div class="tab">
+    <button class="tablinks" onclick="openFeature(event, 'camera-tab')">Dashboard</button>
+    <button class="tablinks" onclick="openFeature(event, 'ifttt-tab')">IFTTT Automation</button>
+  </div>
+
+  <div id="camera-tab" class="tabcontent">
+    <table width="100%" height="600" border="0">
+      <tr>
+        <td style="width: 50%; background-color: white;" align="center">
+        
+          <img src="{{url_for('static', filename='images/live.gif')}}" width="50" height="25" />
+          <iframe src="http://192.168.1.196:8000" width="100%" height="500" frameBorder="0"></iframe>
+        </td>
+        <td style="width: 50%; padding-left: 20px; padding-right: 20px;">
+
+          <table style="width: 100%;" border="0">
+            <tr>
+              <td style="background-color: aquamarine;">Temperature</td>
+            </tr>
+            <tr>
+              <td>
+                <table>
+                  <tr>
+                    <td align="left">
+                      <span id="cSpn">UNKNOWN</span> <b>&#8451;</b>
+                    </td>
+                    <td align="left">
+                      <span id="fSpn">UNKNOWN</span> <b>&#8457;</b>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="left">
+                      <a href=# id=tempReadBtn><button class='btn btn-default'>Refresh</button></a>
+                    </td>
+                    <td align="left">
+                      <img id="tempReadLoading" src="{{url_for('static', filename='images/loading.gif')}}" width="36"
+                        height="36" style="visibility: hidden;" />
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style="background-color: aquamarine;">Door</td>
+            </tr>
+            <tr>
+              <td>
+                <b><span id="doorStatusSpn" style="color: orange;">UNKNOWN</span></b>
+                <img id="doorStatusImg" src="{{url_for('static', filename='images/unknown.png')}}" width="72"
+                  height="72" />
+                <table>
+                  <tr>
+                    <td align="left">
+                      <a href=# id=doorStatusBtn><button class='btn btn-default'>Refresh</button></a>
+                    </td>
+                    <td align="left">
+                      <img id="doorStatusLoading" src="{{url_for('static', filename='images/loading.gif')}}" width="36"
+                        height="36" style="visibility: hidden;" />
+                    </td>
+                  </tr>
+                </table>
+
+              </td>
+            </tr>
+            <tr>
+              <td>&nbsp;</td>
+            </tr>
+            <tr>
+              <td style="background-color: aquamarine;">Motion Detection</td>
+            </tr>
+            <tr>
+              <td>
+                <b><span id="motionStatusSpn" style="color: orange;">UNKNOWN</span></b>
+                <img id="motionStatusImg" src="{{url_for('static', filename='images/unknown.png')}}" width="72"
+                  height="72" />
+                <table>
+                  <tr>
+                    <td align="left">
+                      <a href=# id=motionStatusBtn><button class='btn btn-default'>Refresh</button></a>
+                    </td>
+                    <td align="left">
+                      <img id="motionStatusLoading" src="{{url_for('static', filename='images/loading.gif')}}"
+                        width="36" height="36" style="visibility: hidden;" />
+                    </td>
+                  </tr>
+                </table>
+
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div id="ifttt-tab" class="tabcontent">
+
+    <h3>TODO</h3>
+
+  </div>
+
+  <script>
+    function openFeature(evt, featureName) {
+      var i, tabcontent, tablinks;
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+      }
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      document.getElementById(featureName).style.display = "block";
+      evt.currentTarget.className += " active";
+    }
+  </script>
+
+
+  <hr />
+  <div style="text-align: right;">
+    &copy;2023 Group-007 | Spring 2023 CY501-742 | Southeast Missouri State University
+  </div>
+
+</body>
+
+</html>

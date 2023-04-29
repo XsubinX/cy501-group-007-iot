@@ -3,7 +3,7 @@ import logging
 from tinydb import TinyDB, Query
 import hashlib
 import os
-from dummy_camera_service import capture_image
+from camera_service import capture_image
 from door_service import get_door_pin_status
 from temperature_service import read_temp
 from motion_service import get_motion_pin_status
@@ -66,7 +66,7 @@ def login():
             if hashlib.md5(password.encode()).hexdigest() == logged_in_user["password"]:
                 app.logger.info(f'password match')
                 #return redirect(url_for('dashboard'))
-                return render_template('dashboard.html', loggedInUser=username) 
+                return render_template('dashboard2.html', loggedInUser=username) 
                 #return render_template('dashboard.html', capture_image_path = latest_camera_capture)
             else:
                 app.logger.info(f'password doesn\'t match')
@@ -88,7 +88,7 @@ def dashboard():
     app.logger.info('Inside dashboard')
     app.logger.info(f'capture_image_path = {latest_camera_capture}')
     
-    return render_template('dashboard.html')
+    return render_template('dashboard2.html')
 
 @app.route('/motion', methods=['GET', 'POST'])
 def motion():
