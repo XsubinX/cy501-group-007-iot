@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, make_response
 import logging
 from tinydb import TinyDB, Query
 import hashlib
@@ -6,10 +6,18 @@ import os
 from dummy_camera_service import capture_image
 from dummy_door_service import get_door_pin_status
 from dummy_temperature_service import read_temp
+from dummy_motion_service import get_motion_pin_status
 import json
+from flask_socketio import SocketIO, emit
+from flask_cors import CORS
 
 
 app = Flask(__name__)
+#socketio = SocketIO(app, cors_allowed_origins=['*'])
+#socketio = SocketIO(app, cors_allowed_origins=['http://127.0.0.1:5000']) 
+socketio = SocketIO(app, cors_allowed_origins='*')
+CORS(app)
+
 db = TinyDB('db.json')
 CAMERA_FOLDER = os.path.join('static', 'camera')
 app.config['CAMERA_FOLDER'] = CAMERA_FOLDER
@@ -82,6 +90,20 @@ def dashboard():
     
     return render_template('dashboard.html')
 
+@app.route('/motion', methods=['GET', 'POST'])
+def motion():
+    app.logger.info('Inside motion')    
+    response = make_response(render_template('motion-detection.html'))
+    #response.headers.add('Access-Control-Allow-Origin', '*')
+    #return render_template('motion-detection.html')
+    response.headers.add('Access-Control-Allow-Origin', '*')
+    return response
+
+@socketio.on('connect')
+def test_connect():
+     app.logger.info('Inside test_connect')    
+     socketio.emit('after connect', {'data':'Let us learn Web Socket in Flask'})
+
 @app.route('/camera/capture', methods=['GET', 'POST'])
 def camera_capture():
     app.logger.info ("camera_capture")
@@ -97,4 +119,10 @@ def temperature_status():
     app.logger.info ("temperature_status")
     return json.dumps(read_temp())
 
-app.run(host='0.0.0.0', port=8081, debug=True)
+@app.route('/motion/status', methods=['GET', 'POST'])
+def motion_status():
+    app.logger.info ("motion_status")
+    return str(get_motion_pin_status())
+
+#app.run(host='0.0.0.0', port=8081, debug=True)
+socketio.run(app, host='0.0.0.0', port=8081, debug=True)

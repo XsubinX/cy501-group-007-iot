@@ -59,7 +59,31 @@
             return false;
           });
 
-          
+         
+          $('a#motionStatusBtn').on('click', function(e) {
+            e.preventDefault()
+            document.getElementById('motionStatusLoading').style.visibility = 'visible'
+            $.post('/motion/status',
+                function(data) {
+              //alert(data)
+              if(data==1)
+              {
+                document.getElementById("motionStatusSpn").innerHTML="Motion Detected";
+                document.getElementById("motionStatusSpn").style.color="red"
+                document.getElementById('motionStatusImg').src='static/images/run.gif'
+              }
+              
+            else
+                 {
+                  document.getElementById("motionStatusSpn").innerHTML="No Motion";
+                  document.getElementById("motionStatusSpn").style.color="green"
+                  document.getElementById('motionStatusImg').src='static/images/sensor.gif'
+                 }  
+                 document.getElementById('motionStatusLoading').style.visibility = 'hidden' 
+            });
+            return false;
+          });
+
 
         });
 </script>
@@ -107,6 +131,8 @@
   </head>
   <body onload="openFeature(event, 'camera-tab')">
 
+    <a href="{{ url_for('motion') }}">Live Moition Detection</a>
+
 <table style="width: 100%;">
   <tr>
     <td align="left" style="width: 50%;"><h1>Group-007 IoT Node Manager</h1></td>
@@ -121,11 +147,12 @@
   <button class="tablinks" onclick="openFeature(event, 'camera-tab')">Camera</button>
   <button class="tablinks" onclick="openFeature(event, 'temperature-tab')">Temperature</button>
   <button class="tablinks" onclick="openFeature(event, 'door-tab')">Door</button>
+  <button class="tablinks" onclick="openFeature(event, 'motion-tab')">Motion Detection</button>
 </div>
 
 <div id="camera-tab" class="tabcontent">
   <h3>Front Door View</h3>
-  <img  id="captureImg" src="{{url_for('static', filename='camera/black.jpeg')}}" width="620" height="480"/>
+  <!--img  id="captureImg" src="{{url_for('static', filename='camera/black.jpeg')}}" width="620" height="480"/>
 
  
   
@@ -139,7 +166,8 @@
         <img  id="captureLoading" src="{{url_for('static', filename='images/loading.gif')}}" width="36" height="36" style="visibility: hidden;"/>
       </td>
     </tr>
-  </table>
+  </table-->
+  <iframe src="http://localhost:8000" title="Live Stream"></iframe>
 
 </div>
 
@@ -179,6 +207,27 @@
       </td>
       <td align="left">   
         <img  id="doorStatusLoading" src="{{url_for('static', filename='images/loading.gif')}}" width="36" height="36" style="visibility: hidden;"/>
+      </td>
+    </tr>
+  </table>
+
+</div>
+
+<div id="motion-tab" class="tabcontent">
+  <h3>Motion Detection</h3>
+  <b><span id="motionStatusSpn" style="color: orange;">UNKNOWN</span></b>
+  <img  id="motionStatusImg" src="{{url_for('static', filename='images/unknown.png')}}" width="72" height="72" />
+
+
+  
+  <hr>
+  <table>
+    <tr>
+      <td align="left">
+        <a href=# id=motionStatusBtn><button class='btn btn-default'>Refresh</button></a>
+      </td>
+      <td align="left">   
+        <img  id="motionStatusLoading" src="{{url_for('static', filename='images/loading.gif')}}" width="36" height="36" style="visibility: hidden;"/>
       </td>
     </tr>
   </table>
