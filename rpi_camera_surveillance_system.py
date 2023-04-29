@@ -1,6 +1,3 @@
-# Web streaming example
-# Source code from the official PiCamera package
-# http://picamera.readthedocs.io/en/latest/recipes2.html#web-streaming
 
 import io
 import picamera
@@ -12,10 +9,10 @@ from http import server
 PAGE="""\
 <html>
 <head>
-<title>Raspberry Pi - Surveillance Camera</title>
+<title>Group-007 IoT Node Manager - Live Camera View</title>
 </head>
 <body>
-<center><h1>Raspberry Pi - Surveillance Camera</h1></center>
+<center><h1>Group-007 IoT Node Manager - Live Camera View</h1></center>
 <center><img src="stream.mjpg" width="640" height="480"></center>
 </body>
 </html>
